@@ -95,7 +95,8 @@ export const registrarEnMaestro = def({
     // Defensa en profundidad: se vuelve a evaluar aquí; nunca se confía en lo que diga el modelo.
     const e = evaluar(mensajeId, correcciones ?? {});
     if (e.decision === "RECHAZADO" || e.decision === "DUPLICADO") return { escrito: false, motivo: `Decisión ${e.decision}: no se escribe en el maestro.`, controles: e.controles.filter((c) => c.resultado === "BLOQUEO") };
-    if (e.decision === "REQUIERE_REVISION" && !justificacion) return { escrito: false, motivo: "Requiere revisión: falta la justificación de la persona que aprueba.", alertas: e.controles.filter((c) => c.resultado === "ALERTA") };
+    const hayCorrecciones = !!correcciones && Object.values(correcciones).some((v) => v !== undefined);
+    if ((e.decision === "REQUIERE_REVISION" || hayCorrecciones) && !justificacion) return { escrito: false, motivo: hayCorrecciones ? "Hay datos corregidos por una persona: falta la justificación de quien aprueba." : "Requiere revisión: falta la justificación de la persona que aprueba.", alertas: e.controles.filter((c) => c.resultado === "ALERTA") };
     if (!e.propuesta || e.camposFaltantes.length) return { escrito: false, motivo: `No se registran contratos con campos vacíos: ${e.camposFaltantes.join(", ")}. Pide el dato a la persona y envíalo en correcciones.` };
     if (correcciones?.comercial && !e.autoria.enCatalogo) return { escrito: false, motivo: `"${correcciones.comercial}" no está en el catálogo de comerciales. Usa listar_comerciales y pide a la persona que elija uno.` };
     const en = new Date().toISOString(), aprobadoPor = "revisor (chat)";

@@ -125,3 +125,10 @@ test("autoría: el comercial se resuelve por nombre y se rechaza uno fuera del c
   }, m);
   assert.equal(m.buscar("CT-2026-0420")?.comercialCorreo, "diana.vargas@periferia-demo.co");
 });
+
+test("correcciones humanas exigen justificación aunque los controles queden en OK", async () => {
+  await enMaestro(async () => {
+    const r = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", correcciones: { valor: 250000000, comercial: "Diana Vargas" } })) as { escrito: boolean; motivo: string };
+    assert.equal(r.escrito, false); assert.match(r.motivo, /justificación/);
+  });
+});

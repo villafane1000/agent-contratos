@@ -77,14 +77,14 @@ function resumir(x: Pendiente, ops: Operacion[]): ResumenEscritura | undefined {
       if (p.cambios?.valorAdicional) filas.push(["Valor", `${cop(p.antes?.valor ?? 0)} + ${cop(p.cambios.valorAdicional)} = ${cop((p.antes?.valor ?? 0) + p.cambios.valorAdicional)}`]);
       filas.push(["Archivo", e.carpetaArchivo]);
     } else if (e.camposFaltantes.length) filas.push(["Faltan", e.camposFaltantes.join(", ")]);
-    const corr = (x.input.correcciones ?? {}) as { comercial?: string };
+    const corr = Object.fromEntries(Object.entries((x.input.correcciones ?? {}) as Record<string, unknown>).filter(([, v]) => v !== undefined)) as { comercial?: string };
     // Anticipa lo que la herramienta rechazaría, para no pedir una aprobación que no puede prosperar.
     const bloqueo = e.decision === "RECHAZADO" || e.decision === "DUPLICADO" ? `Decisión ${e.decision}: no se puede escribir.`
       : e.camposFaltantes.length ? `Faltan datos: ${e.camposFaltantes.join(", ")}. Dícteselos al agente en el chat antes de aprobar.`
       : corr.comercial && !e.autoria.enCatalogo ? `"${corr.comercial}" no está en el catálogo de comerciales. Rechaza y pide al agente asignar uno del catálogo (p. ej. "asígnalo a Diana Vargas").`
       : null;
     const justificacionPrevia = typeof x.input.justificacion === "string" ? x.input.justificacion : null;
-    return { mensajeId: id, operacion: e.operacion, decision: e.decision, confianza: e.confianza, filas, alertas: e.controles.filter((c) => c.resultado !== "OK").map((c) => `${c.id} ${c.control}: ${c.detalle}`), requiereJustificacion: e.decision === "REQUIERE_REVISION" && !justificacionPrevia, justificacionPrevia, bloqueo };
+    return { mensajeId: id, operacion: e.operacion, decision: e.decision, confianza: e.confianza, filas, alertas: e.controles.filter((c) => c.resultado !== "OK").map((c) => `${c.id} ${c.control}: ${c.detalle}`), requiereJustificacion: (e.decision === "REQUIERE_REVISION" || Object.keys(corr).length > 0) && !justificacionPrevia, justificacionPrevia, bloqueo };
   } catch { return undefined; }
 }
 function textoResumen(r: ResumenEscritura): string {
