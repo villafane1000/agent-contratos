@@ -111,6 +111,8 @@ Supuestos **[AJUSTAR con la tarifa vigente y con la medición real del chat]**: 
 | Haiku | ≈ US$0,03 | ≈ US$30 | ≈ US$300 |
 | Modo reglas / lote nocturno sin LLM | US$0 | US$0 | US$0 |
 
+**Medición real en la URL pública (Sonnet, 7 oct 2026):** procesar msg-002 (otrosí) costó 4 llamadas, 17.969 tokens de entrada y 748 de salida, ≈ US$0,065; confirmar la escritura costó 1 llamada, ≈ US$0,023. msg-006 (rechazo con explicación) costó 5 llamadas, 23.358 de entrada y 952 de salida, ≈ US$0,084. Esto confirma el orden de magnitud de la tabla: ≈ US$0,09 por correo de punta a punta.
+
 Palancas: el procesamiento masivo del buzón va por el pipeline determinista (como `demo.ts`) y el LLM queda para la conversación y las excepciones (`REQUIERE_REVISION`). Además: caché de prompt, Haiku para clasificar o explicar y Sonnet solo cuando haga falta razonar, y resultados de herramientas compactos.
 
 ## 6. Regla de gobierno para el manejo corporativo de contratos (obligatoria)
