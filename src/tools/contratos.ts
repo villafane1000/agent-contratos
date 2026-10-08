@@ -2,7 +2,7 @@
 // Las reglas viven en src/domain; aquí solo se exponen. demo.ts las llama directo, sin LLM.
 import { z } from "zod";
 import { comerciales, leerMensaje, listarMensajes } from "../data/repo.js";
-import { evaluarMensaje, type Correcciones } from "../domain/controles.js";
+import { evaluarMensaje, buscarComercial, type Correcciones } from "../domain/controles.js";
 import { clasificarDocumento } from "../domain/extraccion.js";
 import { reporteVencimientos } from "../domain/maestro.js";
 import { maestroActual } from "./contexto.js";
@@ -22,7 +22,7 @@ const msgId = z.string().regex(/^[\w-]+$/).describe("Identificador del mensaje d
 const fecha = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const CorreccionesSchema = z.object({
   valor: z.number().positive().optional(),
-  comercialCorreo: z.string().email().optional().describe("Correo del comercial responsable (debe existir en el catálogo)"),
+  comercial: z.string().min(3).optional().describe("Correo o nombre de un comercial del catálogo (consulta listar_comerciales)"),
   fechaInicio: fecha.optional(), fechaFin: fecha.optional(), objeto: z.string().min(3).optional(),
 }).describe("Solo datos que la PERSONA haya dado explícitamente en el chat. Nunca los inventes.");
 
@@ -97,7 +97,7 @@ export const registrarEnMaestro = def({
     if (e.decision === "RECHAZADO" || e.decision === "DUPLICADO") return { escrito: false, motivo: `Decisión ${e.decision}: no se escribe en el maestro.`, controles: e.controles.filter((c) => c.resultado === "BLOQUEO") };
     if (e.decision === "REQUIERE_REVISION" && !justificacion) return { escrito: false, motivo: "Requiere revisión: falta la justificación de la persona que aprueba.", alertas: e.controles.filter((c) => c.resultado === "ALERTA") };
     if (!e.propuesta || e.camposFaltantes.length) return { escrito: false, motivo: `No se registran contratos con campos vacíos: ${e.camposFaltantes.join(", ")}. Pide el dato a la persona y envíalo en correcciones.` };
-    if (correcciones?.comercialCorreo && !e.autoria.enCatalogo) return { escrito: false, motivo: `${correcciones.comercialCorreo} no está en el catálogo de comerciales.` };
+    if (correcciones?.comercial && !e.autoria.enCatalogo) return { escrito: false, motivo: `"${correcciones.comercial}" no está en el catálogo de comerciales. Usa listar_comerciales y pide a la persona que elija uno.` };
     const en = new Date().toISOString(), aprobadoPor = "revisor (chat)";
     if (e.operacion === "ALTA" && e.propuesta.registro) m.aplicar({ tipo: "ALTA", mensajeId, en, registro: e.propuesta.registro, aprobadoPor, justificacion });
     else if (e.operacion === "OTROSI" && e.propuesta.numero) m.aplicar({ tipo: "OTROSI", mensajeId, en, numero: e.propuesta.numero, otrosi: e.propuesta.otrosi ?? "?", cambios: e.propuesta.cambios ?? {}, aprobadoPor, justificacion });
@@ -124,6 +124,20 @@ export const archivarDocumento = def({
   },
 });
 
+export const listarComerciales = def({
+  name: "listar_comerciales",
+  description: "Lista el catálogo de comerciales (correo, nombre, región) para asignar la autoría de un contrato. Acepta un filtro opcional por nombre, correo o región.",
+  input: z.object({ filtro: z.string().optional() }),
+  run: async ({ filtro }) => {
+    const todos = comerciales();
+    if (!filtro) return todos;
+    const exacto = buscarComercial(todos, filtro);
+    if (exacto) return [exacto];
+    const f = filtro.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    return todos.filter((c) => `${c.correo} ${c.nombre} ${c.region}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(f));
+  },
+});
+
 export const consultarMaestro = def({
   name: "consultar_maestro",
   description: "Consulta el maestro de contratos por número o por texto del cliente (vacío = resumen). Incluye cambios aprobados en esta sesión.",
@@ -143,7 +157,7 @@ export const reporteVencimientosTool = def({
   run: async ({ fechaCorte, horizonteDias }) => reporteVencimientos(maestroActual(), fechaCorte ?? FECHA_CORTE, horizonteDias ?? 90),
 });
 
-export const herramientas: Herramienta[] = [listarBuzon, leerCorreo, clasificarCorreo, extraerDatosContrato, validarOperacion, registrarEnMaestro, archivarDocumento, consultarMaestro, reporteVencimientosTool] as Herramienta[];
+export const herramientas: Herramienta[] = [listarBuzon, leerCorreo, clasificarCorreo, extraerDatosContrato, validarOperacion, registrarEnMaestro, archivarDocumento, listarComerciales, consultarMaestro, reporteVencimientosTool] as Herramienta[];
 export const porNombre = new Map(herramientas.map((h) => [h.name, h]));
 
 /** Valida la entrada con zod y ejecuta. Lanza si la entrada es inválida. */

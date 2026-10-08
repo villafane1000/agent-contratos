@@ -23,7 +23,11 @@ export interface Evaluacion {
   carpetaArchivo: string;
 }
 
-export interface Correcciones { valor?: number; comercialCorreo?: string; fechaInicio?: string; fechaFin?: string; objeto?: string }
+export interface Correcciones { valor?: number; comercial?: string; fechaInicio?: string; fechaFin?: string; objeto?: string }
+
+const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+/** Busca un comercial del catálogo por correo o por nombre (sin acentos ni mayúsculas). */
+export const buscarComercial = (catalogo: Comercial[], q: string) => catalogo.find((x) => norm(x.correo) === norm(q) || norm(x.nombre) === norm(q)) ?? null;
 
 const val = <T>(c: Campo<T> | undefined) => c?.valor ?? null;
 const pct = (n: number) => `${Math.round(n * 100)} %`;
@@ -45,10 +49,10 @@ export function evaluarMensaje(msg: Mensaje, maestro: Maestro, catalogo: Comerci
   else add("K01", "Tipo documental", doc.cls.confianza >= UMBRAL_CONFIANZA ? "OK" : "ALERTA", `${tipo} (${pct(doc.cls.confianza)}): ${doc.cls.motivo}`);
 
   // K02 Autoría comercial
-  const correoAutor = (corr.comercialCorreo ?? correo.de).toLowerCase().trim();
-  const com = catalogo.find((x) => x.correo.toLowerCase() === correoAutor) ?? null;
-  const autoria = { correo: correoAutor, nombre: com?.nombre ?? null, region: com?.region ?? null, enCatalogo: !!com };
-  if (com) add("K02", "Autoría comercial", "OK", `${com.nombre} (${com.region})${corr.comercialCorreo ? " — asignado por corrección humana" : ""}.`);
+  const com = buscarComercial(catalogo, corr.comercial ?? correo.de);
+  const autoria = { correo: com?.correo ?? (corr.comercial ?? correo.de).toLowerCase().trim(), nombre: com?.nombre ?? null, region: com?.region ?? null, enCatalogo: !!com };
+  if (com) add("K02", "Autoría comercial", "OK", `${com.nombre} (${com.region})${corr.comercial ? " — asignado por corrección humana" : ""}.`);
+  else if (corr.comercial) add("K02", "Autoría comercial", "ALERTA", `"${corr.comercial}" no está en el catálogo de comerciales; asigna uno del catálogo.`);
   else add("K02", "Autoría comercial", "ALERTA", `El remitente ${correo.de} no está en el catálogo de comerciales: la autoría y la región deben asignarse manualmente.`);
 
   // K09 Instrucciones embebidas (se evalúa para todos los tipos)

@@ -25,7 +25,7 @@ api/chat.ts · api/estado.ts  Funciones Vercel (Web Request/Response)
 src/http.ts                  Handler compartido (Vercel y scripts/dev-server.ts)
 src/agent/runtime.ts         Ciclo del agente: modo LLM (Claude + tool use) y modo reglas (sin LLM)
 agent/prompt.md              System prompt
-src/tools/contratos.ts       9 herramientas zod: la ÚNICA puerta a datos y al maestro
+src/tools/contratos.ts       10 herramientas zod: la ÚNICA puerta a datos y al maestro
 src/domain/                  Funciones puras, sin LLM
   extraccion.ts              Clasificación y extracción con confianza y evidencia
   controles.ts               Matriz K01–K10 → decisión y propuesta
@@ -47,6 +47,7 @@ demo.ts                      Procesa el buzón completo llamando a las herramien
 | `validar_operacion` | Matriz de controles → decisión y propuesta de cambio | — |
 | `registrar_en_maestro` | Alta u otrosí en el maestro y archivo del documento | **Sí** |
 | `archivar_documento` | Archivo en la carpeta de correspondencia que corresponde | — |
+| `listar_comerciales` | Catálogo de comerciales para asignar la autoría (por nombre, correo o región) | — |
 | `consultar_maestro` | Búsqueda por número o cliente, y cambios de la sesión | — |
 | `reporte_vencimientos` | Alertas por nivel a una fecha de corte (por defecto, 2026-05-30) | — |
 
@@ -87,7 +88,7 @@ demo.ts                      Procesa el buzón completo llamando a las herramien
 | msg-005 | Remitente externo y sin valor | REQUIERE_REVISION (K02, K03) | Se escribe solo con justificación y los datos que dé la persona |
 | msg-006 | Otrosí de un contrato inexistente con prompt injection | RECHAZADO (K05, K07) + K09 | La instrucción embebida se ignora y se reporta |
 
-Pruebas: `npm test` ejecuta 15 pruebas (extracción, los 6 casos, idempotencia, otrosí, revisión humana, vencimientos, firmas alteradas y zod).
+Pruebas: `npm test` ejecuta 16 pruebas (extracción, los 6 casos, idempotencia, otrosí, revisión humana, vencimientos, firmas alteradas y zod).
 
 ## 4. Decisiones de diseño
 
@@ -142,7 +143,7 @@ Palancas: el procesamiento masivo del buzón va por el pipeline determinista (co
 ```bash
 npm ci
 npx tsx demo.ts          # buzón completo sin LLM (agrega --json)
-npm test                 # 15 pruebas
+npm test                 # 16 pruebas
 npm run dev              # http://localhost:3000 (sin API key arranca en modo sin LLM)
 ```
 Variables: `ANTHROPIC_API_KEY`, `MODEL` (opcional), `SIGNING_SECRET` (recomendada), `FECHA_CORTE` y `UMBRAL_CONFIANZA` (opcionales).

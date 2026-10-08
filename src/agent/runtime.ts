@@ -19,7 +19,7 @@ export type Evento =
   | { tipo: "confirmacion"; id: string; nombre: string; input: unknown; decision: "aprobada" | "rechazada" };
 
 /** Resumen determinista que ve la persona antes de aprobar (no lo redacta el modelo). */
-export interface ResumenEscritura { mensajeId: string; operacion: string; decision: string; confianza: number; filas: Array<[string, string]>; alertas: string[]; requiereJustificacion: boolean }
+export interface ResumenEscritura { mensajeId: string; operacion: string; decision: string; confianza: number; filas: Array<[string, string]>; alertas: string[]; requiereJustificacion: boolean; justificacionPrevia: string | null; bloqueo: string | null }
 export interface Pendiente { toolUseId: string; nombre: string; input: Record<string, unknown>; resultadosPrevios: Anthropic.ToolResultBlockParam[]; firma?: string; resumen?: ResumenEscritura }
 export interface EstadoMaestro { operaciones: Operacion[]; firma?: string }
 export interface Peticion { modo?: "llm" | "reglas"; messages: Msg[]; mensaje?: string; confirmacion?: { toolUseId: string; aprobado: boolean; comentario?: string }; pendiente?: Pendiente; estado?: EstadoMaestro }
@@ -77,7 +77,14 @@ function resumir(x: Pendiente, ops: Operacion[]): ResumenEscritura | undefined {
       if (p.cambios?.valorAdicional) filas.push(["Valor", `${cop(p.antes?.valor ?? 0)} + ${cop(p.cambios.valorAdicional)} = ${cop((p.antes?.valor ?? 0) + p.cambios.valorAdicional)}`]);
       filas.push(["Archivo", e.carpetaArchivo]);
     } else if (e.camposFaltantes.length) filas.push(["Faltan", e.camposFaltantes.join(", ")]);
-    return { mensajeId: id, operacion: e.operacion, decision: e.decision, confianza: e.confianza, filas, alertas: e.controles.filter((c) => c.resultado !== "OK").map((c) => `${c.id} ${c.control}: ${c.detalle}`), requiereJustificacion: e.decision === "REQUIERE_REVISION" };
+    const corr = (x.input.correcciones ?? {}) as { comercial?: string };
+    // Anticipa lo que la herramienta rechazaría, para no pedir una aprobación que no puede prosperar.
+    const bloqueo = e.decision === "RECHAZADO" || e.decision === "DUPLICADO" ? `Decisión ${e.decision}: no se puede escribir.`
+      : e.camposFaltantes.length ? `Faltan datos: ${e.camposFaltantes.join(", ")}. Dícteselos al agente en el chat antes de aprobar.`
+      : corr.comercial && !e.autoria.enCatalogo ? `"${corr.comercial}" no está en el catálogo de comerciales. Rechaza y pide al agente asignar uno del catálogo (p. ej. "asígnalo a Diana Vargas").`
+      : null;
+    const justificacionPrevia = typeof x.input.justificacion === "string" ? x.input.justificacion : null;
+    return { mensajeId: id, operacion: e.operacion, decision: e.decision, confianza: e.confianza, filas, alertas: e.controles.filter((c) => c.resultado !== "OK").map((c) => `${c.id} ${c.control}: ${c.detalle}`), requiereJustificacion: e.decision === "REQUIERE_REVISION" && !justificacionPrevia, justificacionPrevia, bloqueo };
   } catch { return undefined; }
 }
 function textoResumen(r: ResumenEscritura): string {
@@ -114,7 +121,8 @@ async function turnoLlm(p: Peticion): Promise<Parcial> {
     let res: Anthropic.ToolResultBlockParam;
     if (p.confirmacion.aprobado) {
       eventos.push({ tipo: "confirmacion", id: pend.toolUseId, nombre: pend.nombre, input: pend.input, decision: "aprobada" });
-      const input = { ...pend.input, ...(p.confirmacion.comentario && !pend.input.justificacion ? { justificacion: p.confirmacion.comentario } : {}) };
+      // Lo que la persona escribe en el recuadro de aprobación es la justificación que vale.
+      const input = { ...pend.input, ...(p.confirmacion.comentario ? { justificacion: p.confirmacion.comentario } : {}) };
       res = await correrHerramienta(pend.toolUseId, pend.nombre, input, eventos);
     } else {
       eventos.push({ tipo: "confirmacion", id: pend.toolUseId, nombre: pend.nombre, input: pend.input, decision: "rechazada" });

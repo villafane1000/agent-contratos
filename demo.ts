@@ -33,7 +33,7 @@ for (const { id, asunto } of buzon) {
 }
 
 // Caso de revisión humana: msg-005 se completa con datos dados por la persona (simulado)
-const revision = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Contrato validado con el área jurídica; valor confirmado por la gerencia comercial", correcciones: { valor: 250000000, comercialCorreo: "diana.vargas@periferia-demo.co" } })) as Record<string, unknown>;
+const revision = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Contrato validado con el área jurídica; valor confirmado por la gerencia comercial", correcciones: { valor: 250000000, comercial: "Diana Vargas" } })) as Record<string, unknown>;
 const reporte = (await ejecutar("reporte_vencimientos", {})) as { fechaCorte: string; alertas: Array<{ numero: string; cliente: string; nivel: string; diasRestantes: number }>; totales: Record<string, number> };
 
 if (comoJson) console.log(JSON.stringify({ resumen, revisionMsg005: { escrito: revision.escrito, numero: revision.numero }, vencimientos: reporte }, null, 2));

@@ -95,14 +95,18 @@ function toolCard(e) {
 
 function confirmCard(p) {
   const r = p.resumen;
-  const det = r ? `<table class="ctl" style="margin:4px 0 8px">${r.filas.map(([k, v]) => `<tr><td>${esc(k)}</td><td><b>${esc(v)}</b></td></tr>`).join("")}<tr><td>Decisión</td><td><span class="pill p-${r.decision}">${r.decision}</span> confianza ${Math.round(r.confianza * 100)} %</td></tr></table>${r.alertas.length ? `<div style="margin-bottom:6px">Alertas:<br>${r.alertas.map(esc).join("<br>")}</div>` : ""}${r.requiereJustificacion ? '<div style="color:var(--bad);font-weight:600;margin-bottom:6px">Requiere revisión: escribe la justificación antes de aprobar.</div>' : ""}`
+  const det = r ? `<table class="ctl" style="margin:4px 0 8px">${r.filas.map(([k, v]) => `<tr><td>${esc(k)}</td><td><b>${esc(v)}</b></td></tr>`).join("")}<tr><td>Decisión</td><td><span class="pill p-${r.decision}">${r.decision}</span> confianza ${Math.round(r.confianza * 100)} %</td></tr></table>${r.alertas.length ? `<div style="margin-bottom:6px">Alertas:<br>${r.alertas.map(esc).join("<br>")}</div>` : ""}${r.justificacionPrevia ? `<div style="margin-bottom:6px">Justificación dada en el chat: <b>${esc(r.justificacionPrevia)}</b></div>` : ""}${r.bloqueo ? `<div style="color:var(--bad);font-weight:600;margin-bottom:6px">⛔ ${esc(r.bloqueo)}</div>` : r.requiereJustificacion ? '<div style="color:var(--bad);font-weight:600;margin-bottom:6px">Requiere revisión: escribe la justificación (mínimo 10 caracteres) antes de aprobar.</div>' : ""}`
     : `El agente quiere ejecutar <b>${p.nombre}</b> con:<pre style="margin:6px 0;white-space:pre-wrap">${esc(JSON.stringify(p.input, null, 2))}</pre>`;
   const d = add(`<div class="confirm"><h3>⚠ Se requiere tu confirmación</h3><div class="det">${det}Esta acción escribe en el maestro de contratos y archiva el documento.</div>
     <textarea placeholder="Comentario o justificación (obligatoria si requiere revisión)"></textarea>
+    <div class="aviso" style="color:var(--bad);font-size:13px;margin:-4px 0 8px;display:none"></div>
     <div class="acts"><button class="btn ok">Aprobar y escribir</button><button class="btn no">Rechazar</button></div></div>`);
-  const [ok, no] = d.querySelectorAll("button"), ta = d.querySelector("textarea");
+  const [ok, no] = d.querySelectorAll("button"), ta = d.querySelector("textarea"), aviso = d.querySelector(".aviso");
+  if (r?.bloqueo) { ok.disabled = true; ok.title = r.bloqueo; }
+  const avisar = (t) => { aviso.textContent = t; aviso.style.display = "block"; ta.style.borderColor = "var(--bad)"; ta.focus(); };
+  ta.oninput = () => { aviso.style.display = "none"; ta.style.borderColor = ""; };
   const responder = (aprobado) => {
-    if (aprobado && r?.requiereJustificacion && ta.value.trim().length < 10) { ta.focus(); ta.style.borderColor = "var(--bad)"; return; }
+    if (aprobado && r?.requiereJustificacion && ta.value.trim().length < 10) return avisar(`La justificación debe explicar por qué apruebas pese a las alertas (mínimo 10 caracteres; llevas ${ta.value.trim().length}).`);
     ok.disabled = no.disabled = true; ta.disabled = true;
     enviar({ confirmacion: { toolUseId: p.toolUseId, aprobado, comentario: ta.value.trim() || undefined } }, aprobado ? "✅ Aprobado" : "❌ Rechazado");
   };

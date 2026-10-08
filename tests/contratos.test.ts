@@ -79,7 +79,7 @@ test("revisión: sin justificación no escribe; con justificación y datos de la
   await enMaestro(async () => {
     const a = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005" })) as { escrito: boolean };
     const b = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Validado con jurídica y gerencia" })) as { escrito: boolean; motivo: string };
-    const c = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Validado con jurídica y gerencia", correcciones: { valor: 250000000, comercialCorreo: "diana.vargas@periferia-demo.co" } })) as { escrito: boolean };
+    const c = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Validado con jurídica y gerencia", correcciones: { valor: 250000000, comercial: "diana.vargas@periferia-demo.co" } })) as { escrito: boolean };
     assert.equal(a.escrito, false); assert.equal(b.escrito, false); assert.match(b.motivo, /valor/); assert.equal(c.escrito, true);
   }, m);
   assert.equal(m.buscar("CT-2026-0420")?.region, "Costa");
@@ -111,4 +111,17 @@ test("rechaza acción pendiente o bitácora alteradas", async () => {
 
 test("entrada inválida a una herramienta se rechaza con zod", async () => {
   await assert.rejects(ejecutar("validar_operacion", { mensajeId: "../etc/passwd" }));
+});
+
+test("autoría: el comercial se resuelve por nombre y se rechaza uno fuera del catálogo", async () => {
+  const m = nuevoMaestro();
+  await enMaestro(async () => {
+    const fuera = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Validado con jurídica y gerencia", correcciones: { valor: 250000000, comercial: "victor@gmail.com" } })) as { escrito: boolean; motivo: string };
+    assert.equal(fuera.escrito, false); assert.match(fuera.motivo, /catálogo/);
+    const lista = (await ejecutar("listar_comerciales", { filtro: "diana" })) as Array<{ correo: string }>;
+    assert.equal(lista[0].correo, "diana.vargas@periferia-demo.co");
+    const ok = (await ejecutar("registrar_en_maestro", { mensajeId: "msg-005", justificacion: "Validado con jurídica y gerencia", correcciones: { valor: 250000000, comercial: "diana vargas" } })) as { escrito: boolean };
+    assert.equal(ok.escrito, true);
+  }, m);
+  assert.equal(m.buscar("CT-2026-0420")?.comercialCorreo, "diana.vargas@periferia-demo.co");
 });
