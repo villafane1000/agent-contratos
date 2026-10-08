@@ -2,7 +2,7 @@
 
 Agente en TypeScript (Node 22) que recibe el buzón de contratos, clasifica cada correo, extrae los datos del contrato con confianza por campo, valida contra el maestro y el catálogo de comerciales, y escribe en un SharePoint simulado **solo con confirmación humana**. También archiva documentos y reporta vencimientos.
 
-**URL pública:** https://agente-conversacional-extraer-datos-de-contratos.vercel.app
+**URL pública:** https://agente-conversacional-extraer-datos-de-contratos.vercel.app · **Repo:** https://github.com/villafane1000/agent-contratos
 
 ## Mapa de entregables
 

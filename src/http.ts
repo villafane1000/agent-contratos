@@ -14,4 +14,4 @@ export async function manejarChat(req: Request): Promise<Response> {
   }
 }
 
-export const estado = () => Response.json({ ok: true, servicio: "agente-contratos", modoLlmDisponible: !!apiKey(), modelo: MODEL });
+export const estado = () => Response.json({ ok: true, servicio: "agente-contratos", modoLlmDisponible: !!apiKey(), modelo: MODEL, version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local" });
