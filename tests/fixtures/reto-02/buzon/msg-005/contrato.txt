@@ -1,0 +1,11 @@
+CONTRATO DE PRESTACIÓN DE SERVICIOS No. CT-2026-0420
+
+Entre PERIFERIA IT GROUP S.A.S. (NIT 900.000.001-1), en adelante EL CONTRATISTA, y LOGÍSTICA EXPRESS S.A.S. (NIT 901.456.789-0), en adelante EL CLIENTE, se celebra el presente contrato:
+
+CLÁUSULA PRIMERA – OBJETO: Desarrollo de aplicación móvil de rastreo de envíos.
+
+CLÁUSULA SEGUNDA – VALOR: El valor será el que resulte de las órdenes de servicio aprobadas por el CLIENTE.
+
+CLÁUSULA TERCERA – PLAZO: El contrato inicia el 15 de junio de 2026 y termina el 14 de diciembre de 2026.
+
+Para constancia se firma en Barranquilla, el 5 de junio de 2026.

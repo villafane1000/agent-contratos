@@ -1,0 +1,9 @@
+{
+  "id": "msg-002",
+  "de": "carlos.mejia@periferia-demo.co",
+  "para": "contratos@periferia-demo.co",
+  "asunto": "Otrosí No. 1 al contrato CT-2025-0187 Retail Nova",
+  "fecha": "2026-06-03T16:40:00-05:00",
+  "cuerpo": "Buenas tardes,\n\nRetail Nova firmó el otrosí No. 1 que prorroga el contrato CT-2025-0187 y adiciona valor. Va adjunto para actualizar el maestro.\n\nSaludos,\nCarlos Mejía",
+  "adjuntos": ["otrosi.txt"]
+}

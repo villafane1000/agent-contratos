@@ -1,0 +1,6 @@
+[
+  { "correo": "ana.restrepo@periferia-demo.co", "nombre": "Ana María Restrepo", "region": "Bogotá" },
+  { "correo": "carlos.mejia@periferia-demo.co", "nombre": "Carlos Mejía", "region": "Medellín" },
+  { "correo": "laura.gomez@periferia-demo.co", "nombre": "Laura Gómez", "region": "Cali" },
+  { "correo": "diana.vargas@periferia-demo.co", "nombre": "Diana Vargas", "region": "Costa" }
+]

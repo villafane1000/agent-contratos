@@ -1,0 +1,11 @@
+CONTRATO DE PRESTACIÓN DE SERVICIOS No. CT-2025-0233
+
+Entre PERIFERIA IT GROUP S.A.S. (NIT 900.000.001-1), en adelante EL CONTRATISTA, y ASEGURADORA DEL VALLE S.A. (NIT 860.444.555-6), en adelante EL CLIENTE, se celebra el presente contrato:
+
+CLÁUSULA PRIMERA – OBJETO: Pruebas funcionales y automatización QA.
+
+CLÁUSULA SEGUNDA – VALOR: El valor total del contrato es de $150.000.000 COP, IVA incluido.
+
+CLÁUSULA TERCERA – PLAZO: El contrato inicia el 1 de agosto de 2025 y termina el 31 de julio de 2026.
+
+Para constancia se firma en Cali, el 25 de julio de 2025.

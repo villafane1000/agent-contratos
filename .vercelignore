@@ -1,0 +1,6 @@
+_codex_v0
+node_modules
+tests
+*.tgz
+.env*
+.vercel

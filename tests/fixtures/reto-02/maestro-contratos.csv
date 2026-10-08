@@ -1,0 +1,11 @@
+numero_contrato,cliente,nit_cliente,objeto,valor,moneda,fecha_inicio,fecha_fin,comercial_correo,region,estado,ruta_documento
+CT-2024-0012,Transportes La Sabana Ltda.,800.123.987-3,Migración de infraestructura a nube,180000000,COP,2024-01-15,2026-01-14,ana.restrepo@periferia-demo.co,Bogotá,VENCIDO,/Contratos/2024/CT-2024-0012/contrato.pdf
+CT-2024-0051,Energía del Norte S.A. E.S.P.,890.100.200-1,Soporte AMS de SAP,360000000,COP,2024-07-01,2026-06-30,ana.restrepo@periferia-demo.co,Bogotá,VIGENTE,/Contratos/2024/CT-2024-0051/contrato.pdf
+CT-2024-0102,Clínica Santa Lucía S.A.S.,900.300.400-5,Desarrollo del portal de pacientes,210000000,COP,2024-09-15,2026-06-14,laura.gomez@periferia-demo.co,Cali,VIGENTE,/Contratos/2024/CT-2024-0102/contrato.pdf
+CT-2025-0187,Retail Nova S.A.S.,901.222.333-4,Fábrica de software para comercio electrónico,540000000,COP,2025-07-01,2026-06-30,carlos.mejia@periferia-demo.co,Medellín,VIGENTE,/Contratos/2025/CT-2025-0187/contrato.pdf
+CT-2025-0233,Aseguradora del Valle S.A.,860.444.555-6,Pruebas funcionales y automatización QA,150000000,COP,2025-08-01,2026-07-31,laura.gomez@periferia-demo.co,Cali,VIGENTE,/Contratos/2025/CT-2025-0233/contrato.pdf
+CT-2025-0301,Telco Andina S.A.,830.777.888-9,Mesa de servicio nivel 1 y 2,720000000,COP,2025-10-01,2026-09-30,ana.restrepo@periferia-demo.co,Bogotá,VIGENTE,/Contratos/2025/CT-2025-0301/contrato.pdf
+CT-2025-0322,Comercializadora Caribe S.A.S.,900.888.111-2,Analítica de datos y tableros,95000000,COP,2025-11-01,2026-08-15,diana.vargas@periferia-demo.co,Costa,VIGENTE,/Contratos/2025/CT-2025-0322/contrato.pdf
+CT-2025-0350,Universidad del Pacífico,891.900.100-7,Plataforma académica en la nube,260000000,COP,2025-12-01,2027-11-30,laura.gomez@periferia-demo.co,Cali,VIGENTE,/Contratos/2025/CT-2025-0350/contrato.pdf
+CT-2026-0018,Alimentos La Pradera S.A.,860.010.020-3,Automatización RPA de cuentas por pagar,130000000,COP,2026-02-01,2027-01-31,carlos.mejia@periferia-demo.co,Medellín,VIGENTE,/Contratos/2026/CT-2026-0018/contrato.pdf
+CT-2026-0044,Banco Andino S.A.,860.555.111-2,Centro de operaciones de ciberseguridad (SOC),410000000,COP,2026-03-01,2027-02-28,ana.restrepo@periferia-demo.co,Bogotá,VIGENTE,/Contratos/2026/CT-2026-0044/contrato.pdf

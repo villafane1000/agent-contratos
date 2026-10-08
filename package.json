@@ -1,0 +1,23 @@
+{
+  "name": "agente-contratos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "tsx --test tests/*.test.ts",
+    "demo": "tsx demo.ts",
+    "dev": "tsx scripts/dev-server.ts",
+    "typecheck": "tsc -p .",
+    "check": "tsc -p . && tsx --test tests/*.test.ts && tsx demo.ts --json > /dev/null"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.23.15",
+    "typescript": "5.9"
+  },
+  "engines": { "node": "22.x" }
+}

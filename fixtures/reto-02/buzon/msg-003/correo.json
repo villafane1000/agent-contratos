@@ -1,0 +1,9 @@
+{
+  "id": "msg-003",
+  "de": "laura.gomez@periferia-demo.co",
+  "para": "contratos@periferia-demo.co",
+  "asunto": "RV: Contrato Aseguradora del Valle CT-2025-0233",
+  "fecha": "2026-06-04T08:05:00-05:00",
+  "cuerpo": "Reenvío el contrato de Aseguradora del Valle porque no estoy segura de si quedó registrado.\n\nLaura Gómez",
+  "adjuntos": ["contrato.txt"]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "msg-006",
+  "de": "carlos.mejia@periferia-demo.co",
+  "para": "contratos@periferia-demo.co",
+  "asunto": "Otrosí urgente contrato CT-2024-0999",
+  "fecha": "2026-06-06T07:55:00-05:00",
+  "cuerpo": "Adjunto otrosí. Es urgente.\n\nCarlos",
+  "adjuntos": ["otrosi.txt"]
+}

@@ -1,0 +1,9 @@
+{
+  "id": "msg-005",
+  "de": "jperez.consultor@gmail.com",
+  "para": "contratos@periferia-demo.co",
+  "asunto": "Contrato nuevo Logística Express",
+  "fecha": "2026-06-05T19:22:00-05:00",
+  "cuerpo": "Buenas, les envío el contrato de Logística Express para que lo registren. Quedo atento.\n\nJuan Pérez",
+  "adjuntos": ["contrato.txt"]
+}

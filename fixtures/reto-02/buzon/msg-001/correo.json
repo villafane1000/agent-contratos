@@ -1,0 +1,9 @@
+{
+  "id": "msg-001",
+  "de": "ana.restrepo@periferia-demo.co",
+  "para": "contratos@periferia-demo.co",
+  "asunto": "Contrato firmado CT-2026-0412 - Banco Andino - mesa de ayuda",
+  "fecha": "2026-06-02T09:14:00-05:00",
+  "cuerpo": "Hola equipo,\n\nAdjunto el contrato CT-2026-0412 firmado por Banco Andino para la mesa de ayuda nivel 2. Por favor registrarlo en el maestro.\n\nGracias,\nAna María Restrepo\nGerente Comercial Bogotá",
+  "adjuntos": ["contrato.txt"]
+}
